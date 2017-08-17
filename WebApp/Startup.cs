@@ -20,6 +20,8 @@ namespace WebApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            app.ConfigureAutofacContainer();
+
             Database.SetInitializer(new SjInitializer());
         }
     }
