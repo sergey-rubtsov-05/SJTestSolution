@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataAccess;
 using DataAccess.Dto;
 using DataModel.Common;
@@ -33,7 +30,18 @@ namespace Business
 
         public Message AddMessage(MessageDto message)
         {
-            throw new NotImplementedException();
+            var user = _context.Users.SingleOrDefault(u => u.Name == message.Username) ??
+                       new User { Name = message.Username };
+
+            var newMessage = new Message
+            {
+                Text = message.Text,
+                User = user,
+                CreationDateTime = DateTime.Now
+            };
+            _context.Messages.Add(newMessage);
+            _context.SaveChanges();
+            return newMessage;
         }
     }
 }

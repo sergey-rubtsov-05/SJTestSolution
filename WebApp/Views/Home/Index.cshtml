@@ -3,6 +3,26 @@
     ViewBag.Title = "Home Page";
 }
 
+<script>
+    var addMessage = function() {
+        var message = {};
+        message.text = $("#text").val();
+        message.username = $("#username").val();
+
+        $.ajax({
+            type: 'post',
+            data: message,
+            url: '@Url.Action("AddMessage")',
+            success: function() {
+                window.location.reload(false);
+            },
+            error: function(jqXhr, textStatus) {
+                alert(textStatus);
+            }
+        });
+    }
+</script>
+
 <div class="row">
     <div class="col-md-12">
         <div>
@@ -16,6 +36,19 @@
                             </li>
                         }
                     </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Username" id="username" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Text" id="text" />
+                        </div>
+                        <button class="btn btn-default" onclick="addMessage();">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
