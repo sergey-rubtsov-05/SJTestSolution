@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Business;
 using DataAccess;
 using Owin;
 
@@ -15,6 +16,7 @@ namespace WebApp
 
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<SjContext>().AsSelf().InstancePerRequest();
+            builder.RegisterType<MessageService>().As<IMessageService>().InstancePerRequest();
 
             var container = builder.Build();
 
