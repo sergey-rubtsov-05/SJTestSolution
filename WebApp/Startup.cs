@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using DataAccess;
+using Microsoft.Owin;
+using Owin;
+using WebApp;
+
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace WebApp
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class Startup
     {
-        protected void Application_Start()
+        public void Configuration(IAppBuilder app)
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -20,8 +21,6 @@ namespace WebApp
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             Database.SetInitializer(new SjInitializer());
-            var context = new SjContext();
-            var messages = context.Messages.ToList();
         }
     }
 }
