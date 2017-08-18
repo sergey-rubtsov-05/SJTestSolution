@@ -7,11 +7,14 @@
     var addMessage = function() {
         var message = {};
         message.text = $("#text").val();
-        message.username = $("#username").val();
+        var username = $("#username").val();
 
         $.ajax({
             type: 'post',
             data: message,
+            headers: {
+                login: username
+            },
             url: '@Url.Action("AddMessage")',
             success: function() {
                 window.location.reload(false);

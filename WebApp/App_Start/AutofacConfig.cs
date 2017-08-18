@@ -17,10 +17,13 @@ namespace WebApp
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<SjContext>().AsSelf().InstancePerRequest();
             builder.RegisterType<MessageService>().As<IMessageService>().InstancePerRequest();
+            builder.RegisterType<AuthenticateMiddleware>().AsSelf();
+            builder.RegisterType<SessionContext>().AsSelf().InstancePerRequest();
 
             var container = builder.Build();
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+            app.UseAutofacLifetimeScopeInjector(container);
             app.UseAutofacMvc();
         }
     }

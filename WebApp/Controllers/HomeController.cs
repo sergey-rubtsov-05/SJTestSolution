@@ -6,10 +6,12 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly SessionContext _sessionContext;
         private readonly IMessageService _messageService;
 
-        public HomeController(IMessageService messageService)
+        public HomeController(SessionContext sessionContext, IMessageService messageService)
         {
+            _sessionContext = sessionContext;
             _messageService = messageService;
         }
 
@@ -19,8 +21,10 @@ namespace WebApp.Controllers
             return View(messages);
         }
 
+        [Authorize]
         public void AddMessage(MessageDto message)
         {
+            message.Username = _sessionContext.Username;
             _messageService.AddMessage(message);
         }
 
