@@ -1,4 +1,4 @@
-﻿namespace DataAccess.Dto
+﻿namespace DataModel.Dto
 {
     public class MessageDto
     {

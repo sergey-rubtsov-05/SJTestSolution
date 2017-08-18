@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using Business;
-using DataAccess.Dto;
 using DataModel.Common;
+using DataModel.Dto;
 using DataModel.Enities;
 
 namespace WebApp.Controllers

@@ -1,5 +1,5 @@
-﻿using DataAccess.Dto;
-using DataModel.Common;
+﻿using DataModel.Common;
+using DataModel.Dto;
 using DataModel.Enities;
 
 namespace Business

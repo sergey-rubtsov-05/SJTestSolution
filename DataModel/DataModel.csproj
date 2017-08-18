@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Common\Page.cs" />
     <Compile Include="Common\PageSettings.cs" />
+    <Compile Include="Dto\MessageDto.cs" />
     <Compile Include="Enities\Entity.cs" />
     <Compile Include="Enities\Message.cs" />
     <Compile Include="Enities\User.cs" />

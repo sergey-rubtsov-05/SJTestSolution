@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using DataAccess;
-using DataAccess.Dto;
 using DataModel.Common;
+using DataModel.Dto;
 using DataModel.Enities;
 
 namespace Business
