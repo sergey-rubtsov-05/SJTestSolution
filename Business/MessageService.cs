@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataAccess;
-using DataModel.Common;
 using DataModel.Dto;
 using DataModel.Enities;
 
@@ -16,16 +16,12 @@ namespace Business
             _context = context;
         }
 
-        public Page<Message> GetMessages(PageSettings pageSettings)
+        public IList<Message> GetMessages()
         {
             var queryable = _context.Messages.AsQueryable();
-            var total = queryable.Count();
-
             var messages = queryable
-                .OrderBy(m => m.CreationDateTime)
-                .Skip(pageSettings.Skip)
-                .Take(pageSettings.Size);
-            return new Page<Message> { Data = messages.ToList(), Total = total };
+                .OrderByDescending(m => m.CreationDateTime);
+            return messages.ToList();
         }
 
         public Message AddMessage(MessageDto message)

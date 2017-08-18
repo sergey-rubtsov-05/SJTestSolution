@@ -1,8 +1,6 @@
 ﻿using System.Web.Mvc;
 using Business;
-using DataModel.Common;
 using DataModel.Dto;
-using DataModel.Enities;
 
 namespace WebApp.Controllers
 {
@@ -17,7 +15,7 @@ namespace WebApp.Controllers
 
         public ActionResult Index()
         {
-            var messages = _messageService.GetMessages(new PageSettings(1, 50));
+            var messages = _messageService.GetMessages();
             return View(messages);
         }
 

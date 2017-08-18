@@ -1,4 +1,4 @@
-﻿@model DataModel.Common.Page<DataModel.Enities.Message>
+﻿@model IList<DataModel.Enities.Message>
 @{
     ViewBag.Title = "Home Page";
 }
@@ -29,7 +29,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <ul class="list-group">
-                        @foreach (var message in Model.Data)
+                        @foreach (var message in Model)
                         {
                             <li class="list-group-item">
                                 <span class="user-name">@message.User.Name</span> - <span class="message-datetime">@message.CreationDateTime</span>: @message.Text
