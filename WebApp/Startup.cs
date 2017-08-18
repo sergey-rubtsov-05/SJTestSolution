@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Data.Entity;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using DataAccess;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 using Owin;
 using WebApp;
@@ -56,19 +59,27 @@ namespace WebApp
                 context.Response.Cookies.Append("authorization", authorizationCookie);
             }
             _sessionContext.Username = DecryptCookie(authorizationCookie);
-            //TODO may be use HttpContext for stage user for work AuthorizeAttribute
+            context.Authentication.User =
+                new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("login", _sessionContext.Username) }, "customCookie"));
 
             await Next.Invoke(context);
         }
 
         private string DecryptCookie(string authorizationCookie)
         {
+            var securityToken = new JwtSecurityTokenHandler().ReadToken(authorizationCookie);
             return Encoding.UTF8.GetString(Convert.FromBase64String(authorizationCookie));
         }
 
         private string CreateCookie(string loginHeader)
         {
-            var loginHeaderInBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(loginHeader));
+            var claims = new[] { new Claim("login", loginHeader)};
+            var jwtSecurityToken = new JwtSecurityToken(issuer: "sjTest", audience: "sjTestA", notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddYears(1), claims: claims,
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("hello")),
+                    SecurityAlgorithms.HmacSha256));
+
+            var loginHeaderInBase64 = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             return loginHeaderInBase64;
         }
     }
