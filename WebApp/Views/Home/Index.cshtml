@@ -13,14 +13,13 @@
             type: 'post',
             data: message,
             headers: {
-                login: username
+                Username: username
             },
             url: '@Url.Action("AddMessage")',
             success: function() {
                 window.location.reload(false);
             },
             error: function (jqXhr, textStatus) {
-                debugger;
                 alert(textStatus);
             }
         });

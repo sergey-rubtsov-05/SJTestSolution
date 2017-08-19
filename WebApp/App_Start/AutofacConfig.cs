@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Business;
 using DataAccess;
 using Owin;
+using WebApp.Engine.Security;
 
 namespace WebApp
 {
@@ -18,7 +20,8 @@ namespace WebApp
             builder.RegisterType<SjContext>().AsSelf().InstancePerRequest();
             builder.RegisterType<MessageService>().As<IMessageService>().InstancePerRequest();
             builder.RegisterType<AuthenticateMiddleware>().AsSelf();
-            builder.RegisterType<SessionContext>().AsSelf().InstancePerRequest();
+            builder.RegisterType<UserContext>().AsSelf().InstancePerRequest();
+            builder.RegisterType<JwtSecurityTokenHandler>().AsSelf();
 
             var container = builder.Build();
 

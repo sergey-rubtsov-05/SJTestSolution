@@ -1,17 +1,18 @@
 ﻿using System.Web.Mvc;
 using Business;
 using DataModel.Dto;
+using WebApp.Engine.Security;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SessionContext _sessionContext;
+        private readonly UserContext _userContext;
         private readonly IMessageService _messageService;
 
-        public HomeController(SessionContext sessionContext, IMessageService messageService)
+        public HomeController(UserContext userContext, IMessageService messageService)
         {
-            _sessionContext = sessionContext;
+            _userContext = userContext;
             _messageService = messageService;
         }
 
@@ -24,7 +25,7 @@ namespace WebApp.Controllers
         [Authorize]
         public void AddMessage(MessageDto message)
         {
-            message.Username = _sessionContext.Username;
+            message.Username = _userContext.Username;
             _messageService.AddMessage(message);
         }
 
