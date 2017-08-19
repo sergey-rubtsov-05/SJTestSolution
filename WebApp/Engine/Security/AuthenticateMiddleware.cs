@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DataAccess;
+using DataModel.Enities;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 
@@ -10,13 +14,15 @@ namespace WebApp.Engine.Security
     public class AuthenticateMiddleware : OwinMiddleware
     {
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly IUnitOfWork _uow;
         private readonly UserContext _userContext;
 
         public AuthenticateMiddleware(OwinMiddleware next, UserContext userContext,
-            JwtSecurityTokenHandler jwtSecurityTokenHandler) : base(next)
+            JwtSecurityTokenHandler jwtSecurityTokenHandler, IUnitOfWork uow) : base(next)
         {
             _userContext = userContext;
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+            _uow = uow;
         }
 
         public override async Task Invoke(IOwinContext context)
@@ -31,6 +37,7 @@ namespace WebApp.Engine.Security
                     return;
                 }
 
+                CheckUserIsNotExists(usernameInHeader);
                 token = CreateToken(usernameInHeader);
                 context.Response.Cookies.Append(Options.AuthorizationCookieName, token);
             }
@@ -41,6 +48,12 @@ namespace WebApp.Engine.Security
             await Next.Invoke(context);
         }
 
+        private void CheckUserIsNotExists(string usernameInHeader)
+        {
+            if (_uow.Query<User>().Any(u => u.Name == usernameInHeader))
+                throw new AuthenticationException("User already exists");
+        }
+
         private ClaimsPrincipal ValidateToken(string token)
         {
             var validationParameters = new TokenValidationParameters
@@ -48,7 +61,7 @@ namespace WebApp.Engine.Security
                 IssuerSigningKey = Options.SecurityKey,
                 ValidAudience = Options.AudienceName,
                 ValidIssuer = Options.IssuerName
-            };  
+            };
             var principal =
                 _jwtSecurityTokenHandler.ValidateToken(token, validationParameters, out SecurityToken _);
             return principal;

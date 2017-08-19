@@ -6,6 +6,7 @@ using DataAccess;
 using Microsoft.Owin;
 using Owin;
 using WebApp;
+using WebApp.Engine;
 using WebApp.Engine.Security;
 
 [assembly: OwinStartup(typeof(Startup))]
@@ -25,6 +26,7 @@ namespace WebApp
 
             Database.SetInitializer(new SjInitializer());
 
+            app.Use<ExceptionHandlerMiddleware>();
             app.UseMiddlewareFromContainer<AuthenticateMiddleware>();
         }
     }
