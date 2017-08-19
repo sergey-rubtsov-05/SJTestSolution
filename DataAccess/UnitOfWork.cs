@@ -20,7 +20,6 @@ namespace DataAccess
         public void Add<T>(T entity) where T : Entity
         {
             _context.Set<T>().Add(entity);
-            _context.SaveChanges();
         }
 
         public void SaveChanges()
