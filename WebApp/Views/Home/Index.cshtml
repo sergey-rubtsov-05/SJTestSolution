@@ -57,3 +57,16 @@
         </div>
     </div>
 </div>
+
+<script src="~/Scripts/jwt-decode.min.js"></script>
+<script src="~/Scripts/js.cookie.js"></script>
+<script>
+    var token = Cookies.get('authorization');
+    if (token) {
+        var tokenPayLoad = jwt_decode(token);
+        if (tokenPayLoad.Username) {
+            $('#username').val(tokenPayLoad.Username);
+            $('#username').prop('readonly', true);
+        }
+    }
+</script>
