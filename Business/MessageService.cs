@@ -9,24 +9,23 @@ namespace Business
 {
     public class MessageService : IMessageService
     {
-        private readonly SjContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public MessageService(SjContext context)
+        public MessageService(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
-        public IList<Message> GetMessages()
+        public IList<Message> Get()
         {
-            var queryable = _context.Messages.AsQueryable();
-            var messages = queryable
+            var messages = GetQuery()
                 .OrderByDescending(m => m.CreationDateTime);
             return messages.ToList();
         }
 
         public Message AddMessage(MessageDto message)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Name == message.Username) ??
+            var user = _uow.Query<User>().SingleOrDefault(u => u.Name == message.Username) ??
                        new User { Name = message.Username };
 
             var newMessage = new Message
@@ -35,9 +34,14 @@ namespace Business
                 User = user,
                 CreationDateTime = DateTime.Now
             };
-            _context.Messages.Add(newMessage);
-            _context.SaveChanges();
+            _uow.Add(newMessage);
+            _uow.SaveChanges();
             return newMessage;
+        }
+
+        private IQueryable<Message> GetQuery()
+        {
+            return _uow.Query<Message>();
         }
     }
 }

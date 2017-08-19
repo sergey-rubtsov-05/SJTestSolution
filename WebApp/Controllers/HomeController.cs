@@ -18,7 +18,7 @@ namespace WebApp.Controllers
 
         public ActionResult Index()
         {
-            var messages = _messageService.GetMessages();
+            var messages = _messageService.Get();
             return View(messages);
         }
 

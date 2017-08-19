@@ -6,7 +6,7 @@ namespace Business
 {
     public interface IMessageService
     {
-        IList<Message> GetMessages();
+        IList<Message> Get();
 
         Message AddMessage(MessageDto message);
     }
