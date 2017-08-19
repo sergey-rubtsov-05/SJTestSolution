@@ -1,6 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using Business;
 using DataModel.Dto;
+using DataModel.Enities;
 using WebApp.Engine.Security;
 
 namespace WebApp.Controllers
@@ -18,15 +20,21 @@ namespace WebApp.Controllers
 
         public ActionResult Index()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GetMessages()
+        {
             var messages = _messageService.Get();
-            return View(messages);
+            return Json(messages, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
+        [HttpPost]
         public void AddMessage(MessageDto message)
         {
-            message.Username = _userContext.Username;
-            _messageService.AddMessage(message);
+            _messageService.AddMessage(message, _userContext.Username);
         }
 
         public ActionResult About()

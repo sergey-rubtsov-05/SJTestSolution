@@ -1,5 +1,4 @@
-﻿@model IList<DataModel.Enities.Message>
-@{
+﻿@{
     ViewBag.Title = "Home Page";
 }
 
@@ -17,12 +16,42 @@
             },
             url: '@Url.Action("AddMessage")',
             success: function() {
-                window.location.reload(false);
+                getMessages();
             },
             error: function (jqXhr, textStatus) {
                 alert(textStatus);
             }
         });
+    }
+
+    var getMessages = function() {
+        $.ajax({
+            type: 'get',
+            url: '@Url.Action("GetMessages")',
+            success: function (messages) {
+                var html = '';
+                messages.forEach(function (message) {
+                    html +=
+'<li class="list-group-item">' +
+'   <span class="user-name">' + message.User.Name + '</span> - ' +
+'   <span class="message-datetime">' + new Date(parseInt(message.CreationDateTime.substr(6))).toLocaleString() + '</span>: ' + message.Text +
+'</li>';
+                });
+
+                $('#messages').html(html);
+            }
+        });
+    }
+
+    var checkCookie = function() {
+        var token = Cookies.get('authorization');
+        if (token) {
+            var tokenPayLoad = jwt_decode(token);
+            if (tokenPayLoad.Username) {
+                $('#username').val(tokenPayLoad.Username);
+                $('#username').prop('readonly', true);
+            }
+        }
     }
 </script>
 
@@ -31,13 +60,8 @@
         <div>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <ul class="list-group">
-                        @foreach (var message in Model)
-                        {
-                            <li class="list-group-item">
-                                <span class="user-name">@message.User.Name</span> - <span class="message-datetime">@message.CreationDateTime</span>: @message.Text
-                            </li>
-                        }
+                    <ul id="messages" class="list-group">
+                        <li>No messages</li>
                     </ul>
                 </div>
             </div>
@@ -61,12 +85,6 @@
 <script src="~/Scripts/jwt-decode.min.js"></script>
 <script src="~/Scripts/js.cookie.js"></script>
 <script>
-    var token = Cookies.get('authorization');
-    if (token) {
-        var tokenPayLoad = jwt_decode(token);
-        if (tokenPayLoad.Username) {
-            $('#username').val(tokenPayLoad.Username);
-            $('#username').prop('readonly', true);
-        }
-    }
+    checkCookie();
+    getMessages();
 </script>

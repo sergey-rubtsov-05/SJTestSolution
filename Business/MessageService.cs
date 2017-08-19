@@ -23,10 +23,10 @@ namespace Business
             return messages.ToList();
         }
 
-        public Message AddMessage(MessageDto message)
+        public Message AddMessage(MessageDto message, string username)
         {
-            var user = _uow.Query<User>().SingleOrDefault(u => u.Name == message.Username) ??
-                       new User { Name = message.Username };
+            var user = _uow.Query<User>().SingleOrDefault(u => u.Name == username) ??
+                       new User { Name = username };
 
             var newMessage = new Message
             {
