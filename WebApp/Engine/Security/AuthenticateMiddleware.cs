@@ -39,7 +39,8 @@ namespace WebApp.Engine.Security
 
                 CheckUserIsNotExists(usernameInHeader);
                 token = CreateToken(usernameInHeader);
-                context.Response.Cookies.Append(Options.AuthorizationCookieName, token);
+                context.Response.Cookies.Append(Options.AuthorizationCookieName, token,
+                    new CookieOptions { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(7) });
             }
             var principal = ValidateToken(token);
             _userContext.Init(principal.Claims);

@@ -3,9 +3,11 @@ using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using AutoMapper;
 using Business;
 using DataAccess;
 using Owin;
+using WebApp.Engine.Maps;
 using WebApp.Engine.Security;
 
 namespace WebApp
@@ -23,6 +25,10 @@ namespace WebApp
             builder.RegisterType<AuthenticateMiddleware>().AsSelf();
             builder.RegisterType<UserContext>().AsSelf().InstancePerRequest();
             builder.RegisterType<JwtSecurityTokenHandler>().AsSelf();
+
+            var mapperConfiguration = AutoMapperConfigurator.Configure();
+            var mapper = mapperConfiguration.CreateMapper();
+            builder.RegisterInstance(mapper).As<IMapper>().SingleInstance();
 
             var container = builder.Build();
 

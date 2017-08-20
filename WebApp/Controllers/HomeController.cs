@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using AutoMapper;
 using Business;
 using DataModel.Dto;
-using DataModel.Enities;
 using WebApp.Engine.Security;
 
 namespace WebApp.Controllers
@@ -11,11 +11,13 @@ namespace WebApp.Controllers
     {
         private readonly UserContext _userContext;
         private readonly IMessageService _messageService;
+        private readonly IMapper _mapper;
 
-        public HomeController(UserContext userContext, IMessageService messageService)
+        public HomeController(UserContext userContext, IMessageService messageService, IMapper mapper)
         {
             _userContext = userContext;
             _messageService = messageService;
+            _mapper = mapper;
         }
 
         public ActionResult Index()
@@ -27,7 +29,8 @@ namespace WebApp.Controllers
         public ActionResult GetMessages()
         {
             var messages = _messageService.Get();
-            return Json(messages, JsonRequestBehavior.AllowGet);
+            var dtos = _mapper.Map<IList<MessageDto>>(messages);
+            return Json(dtos, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
