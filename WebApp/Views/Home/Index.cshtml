@@ -32,8 +32,10 @@
                 messages.forEach(function (message) {
                     html +=
 '<li class="list-group-item">' +
-'   <span class="user-name">' + message.Username + '</span> - ' +
-'   <span class="message-datetime">' + new Date(parseInt(message.CreationDateTime.substr(6))).toLocaleString() + '</span>: ' + message.Text +
+'<div class="user-name">' + message.Username + '</div>' +
+'<div class="message-datetime">' +
+    new Date(parseInt(message.CreationDateTime.substr(6))).toLocaleString() + '</div> ' +
+'<div class="message-datetime"> Text: ' + message.Text + '</div>' +
 '</li>';
                 });
 
@@ -46,38 +48,54 @@
         var token = Cookies.get('authorization');
         if (token) {
             var tokenPayLoad = jwt_decode(token);
-            if (tokenPayLoad.Username) {
-                $('#username').val(tokenPayLoad.Username);
-                $('#username').prop('readonly', true);
+            for (var field in tokenPayLoad) {
+                if (tokenPayLoad.hasOwnProperty(field)) {
+                    if (field.includes('username')) {
+                        $('#username').val(tokenPayLoad[field]);
+                        $('#username').prop('readonly', true);
+                        break;
+                    }
+                }
             }
         }
     }
 </script>
 
-<div class="row">
-    <div class="col-md-12">
-        <div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <ul id="messages" class="list-group">
-                        <li>No messages</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div>
-                        <div class="form-group">
-                            <input type="text" placeholder="Username" id="username" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" placeholder="Text" id="text" />
-                        </div>
-                        <button class="btn btn-default" onclick="addMessage();">Submit</button>
+<div class="row m-t-20">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div>
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            id="username"
+                            class="form-control"
+                            placeholder="Username"
+                        />
                     </div>
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            id="text"
+                            class="form-control"
+                            placeholder="Text"
+                        />
+                    </div>
+                    <button
+                        class="btn btn-primary"
+                        onclick="addMessage();"
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-md-8">
+        <ul id="messages" class="list-group">
+            <li>No messages</li>
+        </ul>
     </div>
 </div>
 

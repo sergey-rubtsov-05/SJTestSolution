@@ -31,3 +31,7 @@ textarea {
 .message-datetime {
     font-family: monospace;
 }
+
+.m-t-20 {
+    margin-top: 20px;
+}

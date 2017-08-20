@@ -34,6 +34,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public void AddMessage(MessageDto message)
         {
+            message.Text = Server.HtmlEncode(message.Text);
             _messageService.AddMessage(message);
         }
 
