@@ -8,6 +8,6 @@ namespace Business
     {
         IList<Message> Get();
 
-        Message AddMessage(MessageDto message, string username);
+        Message AddMessage(MessageDto message);
     }
 }

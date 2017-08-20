@@ -22,7 +22,14 @@ namespace WebApp.Engine
             {
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(new { message = e.Message }));
+                var jsonException = new
+                {
+                    message = e.Message,
+#if DEBUG
+                    stackTrace = e.StackTrace
+#endif
+                };
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(jsonException));
             }
         }
     }

@@ -8,6 +8,7 @@ using DataAccess;
 using DataModel.Enities;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
+using Security;
 
 namespace WebApp.Engine.Security
 {
@@ -15,12 +16,12 @@ namespace WebApp.Engine.Security
     {
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
         private readonly IUnitOfWork _uow;
-        private readonly UserContext _userContext;
+        private readonly ISecurityContext _securityContext;
 
-        public AuthenticateMiddleware(OwinMiddleware next, UserContext userContext,
+        public AuthenticateMiddleware(OwinMiddleware next, ISecurityContext securityContext,
             JwtSecurityTokenHandler jwtSecurityTokenHandler, IUnitOfWork uow) : base(next)
         {
-            _userContext = userContext;
+            _securityContext = securityContext;
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
             _uow = uow;
         }
@@ -30,7 +31,7 @@ namespace WebApp.Engine.Security
             var token = context.Request.Cookies[Options.AuthorizationCookieName];
             if (string.IsNullOrWhiteSpace(token))
             {
-                var usernameInHeader = context.Request.Headers[nameof(UserContext.Username)];
+                var usernameInHeader = context.Request.Headers[Options.UsernameHeaderName];
                 if (string.IsNullOrWhiteSpace(usernameInHeader))
                 {
                     await Next.Invoke(context);
@@ -43,7 +44,7 @@ namespace WebApp.Engine.Security
                     new CookieOptions { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(7) });
             }
             var principal = ValidateToken(token);
-            _userContext.Init(principal.Claims);
+            _securityContext.Init(principal.Claims);
             context.Authentication.User = principal;
 
             await Next.Invoke(context);
@@ -70,7 +71,7 @@ namespace WebApp.Engine.Security
 
         private string CreateToken(string usernameInHeader)
         {
-            var claims = new[] { new Claim(nameof(UserContext.Username), usernameInHeader) };
+            var claims = new[] { new Claim(Options.UsernameClaimType, usernameInHeader) };
             var jwtSecurityToken = new JwtSecurityToken(
                 Options.IssuerName,
                 Options.AudienceName,

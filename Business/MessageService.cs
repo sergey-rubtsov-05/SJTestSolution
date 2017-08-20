@@ -4,16 +4,19 @@ using System.Linq;
 using DataAccess;
 using DataModel.Dto;
 using DataModel.Enities;
+using Security;
 
 namespace Business
 {
     public class MessageService : IMessageService
     {
         private readonly IUnitOfWork _uow;
+        private readonly ISecurityContext _securityContext;
 
-        public MessageService(IUnitOfWork uow)
+        public MessageService(IUnitOfWork uow, ISecurityContext securityContext)
         {
             _uow = uow;
+            _securityContext = securityContext;
         }
 
         public IList<Message> Get()
@@ -23,15 +26,12 @@ namespace Business
             return messages.ToList();
         }
 
-        public Message AddMessage(MessageDto message, string username)
+        public Message AddMessage(MessageDto message)
         {
-            var user = _uow.Query<User>().SingleOrDefault(u => u.Name == username) ??
-                       new User { Name = username };
-
             var newMessage = new Message
             {
                 Text = message.Text,
-                User = user,
+                UserId = _securityContext.User.Id,
                 CreationDateTime = DateTime.Now
             };
             _uow.Add(newMessage);

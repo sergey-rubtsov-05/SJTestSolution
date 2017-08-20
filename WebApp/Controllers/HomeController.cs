@@ -3,19 +3,16 @@ using System.Web.Mvc;
 using AutoMapper;
 using Business;
 using DataModel.Dto;
-using WebApp.Engine.Security;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserContext _userContext;
         private readonly IMessageService _messageService;
         private readonly IMapper _mapper;
 
-        public HomeController(UserContext userContext, IMessageService messageService, IMapper mapper)
+        public HomeController(IMessageService messageService, IMapper mapper)
         {
-            _userContext = userContext;
             _messageService = messageService;
             _mapper = mapper;
         }
@@ -37,7 +34,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public void AddMessage(MessageDto message)
         {
-            _messageService.AddMessage(message, _userContext.Username);
+            _messageService.AddMessage(message);
         }
 
         public ActionResult About()

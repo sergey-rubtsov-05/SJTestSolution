@@ -7,6 +7,7 @@ using AutoMapper;
 using Business;
 using DataAccess;
 using Owin;
+using Security;
 using WebApp.Engine.Maps;
 using WebApp.Engine.Security;
 using Module = Autofac.Module;
@@ -50,7 +51,7 @@ namespace WebApp
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<AuthenticateMiddleware>().AsSelf();
-            builder.RegisterType<UserContext>().AsSelf().InstancePerRequest();
+            builder.RegisterType<SecurityContext>().As<ISecurityContext>().InstancePerRequest();
             builder.RegisterType<JwtSecurityTokenHandler>().AsSelf();
         }
     }
