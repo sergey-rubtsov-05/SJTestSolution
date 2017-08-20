@@ -26,7 +26,7 @@ namespace Business
             return messages.ToList();
         }
 
-        public Message AddMessage(MessageDto message)
+        public Message Add(MessageDto message)
         {
             var newMessage = new Message
             {
